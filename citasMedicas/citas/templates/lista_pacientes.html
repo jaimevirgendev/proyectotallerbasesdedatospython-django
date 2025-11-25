@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Pacientes</title>
+</head>
+<body>
+    <h1>Pacientes Registrados</h1>
+    
+    <ul>
+        {% for paciente in object_list %} 
+            <li>
+                <strong>{{ paciente.nombre }} {{ paciente.apellido }}</strong> 
+                - Tel: {{ paciente.telefono }}
+            </li>
+        {% empty %}
+            <li>No hay pacientes registrados aún.</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
