@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block branding %}
+    <div id="site-name">
+        <a href="{% url 'admin:index' %}">
+            <img src="{% static 'img/_103aac17-1e1c-4637-9562-9339af1b1c2f.jpg' %}" alt="Logo Personalizado" width="150">
+        </a>
+    </div>
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <style>
+        #header {
+            height: auto; /* Permite que el header crezca si el logo es alto */
+            padding: 10px;
+            align-items: center;
+        }
+    </style>
+{% endblock %}

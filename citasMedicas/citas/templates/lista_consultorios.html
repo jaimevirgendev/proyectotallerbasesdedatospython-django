@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Consultorios{% endblock %}
+
+{% block content %}
+    <h1>Consultorios</h1>
+    
+    <table class="tabla-estilo">
+        <thead>
+            <tr>
+                <th>Nombre del Consultorio</th>
+                <th>Dirección</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for consultorio in object_list %} 
+            <tr>
+                <td>{{ consultorio.nombre_consultorio }}</td>
+                <td>{{ consultorio.direccion }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2" class="mensaje-vacio">No hay consultorios registrados aún.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

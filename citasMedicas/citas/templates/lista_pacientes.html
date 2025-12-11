@@ -1,21 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Lista de Pacientes</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Lista de Pacientes{% endblock %}
+
+{% block content %}
     <h1>Pacientes Registrados</h1>
     
-    <ul>
-        {% for paciente in object_list %} 
-            <li>
-                <strong>{{ paciente.nombre }} {{ paciente.apellido }}</strong> 
-                - Tel: {{ paciente.telefono }}
-            </li>
-        {% empty %}
-            <li>No hay pacientes registrados aún.</li>
-        {% endfor %}
-    </ul>
-
-</body>
-</html>
+    <table class="tabla-estilo">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Fecha de Nacimiento</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in object_list %} 
+            <tr>
+                <td>{{ paciente.nombre }}</td>
+                <td>{{ paciente.apellido }}</td>
+                <td>{{ paciente.fecha_nacimiento }}</td>
+                <td>{{ paciente.telefono }}</td>
+                <td>{{ paciente.email }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="mensaje-vacio">No hay pacientes registrados aún.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

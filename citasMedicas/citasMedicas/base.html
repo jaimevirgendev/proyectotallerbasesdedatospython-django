@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Clínica Citas Médicas{% endblock %}</title>
+    <style>
+        /* Estilos Generales */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Estilos de la Tabla */
+        .tabla-estilo {
+            border-collapse: collapse;
+            margin: 25px auto;
+            font-size: 0.9em;
+            min-width: 400px;
+            width: 90%;
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            background-color: #ffffff;
+        }
+
+        .tabla-estilo thead tr {
+            background-color: #009879; /* Color verde médico */
+            color: #ffffff;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .tabla-estilo th,
+        .tabla-estilo td {
+            padding: 12px 15px;
+        }
+
+        .tabla-estilo tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        /* Efecto cebra (filas alternadas) */
+        .tabla-estilo tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .tabla-estilo tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+        .tabla-estilo tbody tr:hover {
+            background-color: #e9fcf9;
+            cursor: pointer;
+        }
+
+        .mensaje-vacio {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        /* Estilos de Navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2c3e50; /* Un azul oscuro profesional */
+            padding: 10px 40px;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar-brand a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+        .navbar-links {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-links li {
+            margin: 0 15px;
+        }
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+            padding-bottom: 5px;
+            transition: color 0.3s, border-bottom 0.3s;
+        }
+        .navbar-links a:hover {
+            color: #009879;
+            border-bottom: 2px solid #009879;
+        }
+        .navbar-user {
+            display: flex;
+            align-items: center;
+        }
+        .navbar-user span {
+            margin-right: 15px;
+        }
+        .logout-button {
+            background-color: #e74c3c; /* Rojo para logout */
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        .logout-button:hover {
+            background-color: #c0392b;
+        }
+
+        /* Contenido Principal */
+        .main-content {
+            padding: 20px 40px;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            flex-basis: 30%;
+            border-left: 5px solid #009879;
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .card p {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0 0 0;
+            color: #009879;
+        }
+        .welcome-message {
+            text-align: center;
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    {% load auth_extras %}
+    {% if user.is_authenticated %}
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a href="{% url 'lista_citas' %}">Clínica Salud</a>
+        </div>
+        <ul class="navbar-links">
+            <li><a href="{% url 'lista_citas' %}">Citas</a></li>
+            
+            {# Solo mostrar 'Pacientes' a doctores, recepcionistas y superusuarios #}
+            {% if user.is_superuser or user|has_group:'Doctores' or user|has_group:'Recepcionistas' %}
+            <li><a href="{% url 'lista_pacientes' %}">Pacientes</a></li>
+            {% endif %}
+
+            <li><a href="{% url 'lista_doctores' %}">Doctores</a></li>
+            <li><a href="{% url 'lista_consultorios' %}">Consultorios</a></li>
+        </ul>
+        <div class="navbar-user">
+            <span>Hola, {{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="logout-button">Cerrar Sesión</a>
+        </div>
+    </nav>
+    {% endif %}
+
+    <div class="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>

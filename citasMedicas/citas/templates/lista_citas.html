@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Citas{% endblock %}
+
+{% block content %}
+    <h1>Citas Registradas</h1>
+    
+    <table class="tabla-estilo">
+        <thead>
+            <tr>
+                <th>Paciente</th>
+                <th>Doctor</th>
+                <th>Consultorio</th>
+                <th>Fecha</th>
+                <th>Horario</th>
+                <th>Motivo</th>
+                <th>Notas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cita in object_list %} 
+            <tr>
+                <td>{{ cita.paciente }}</td>
+                <td>{{ cita.doctor }}</td>
+                <td>{{ cita.consultorio }}</td>
+                <td>{{ cita.fecha_cita }}</td>
+                <td>{{ cita.hora_cita }}</td>
+                <td>{{ cita.motivo }}</td>
+                <td>{{ cita.notas }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="mensaje-vacio">No hay citas registradas en el sistema.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

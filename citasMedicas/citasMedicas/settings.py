@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = '/citas/'
+LOGIN_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 
 # Application definition
 
@@ -55,7 +59,7 @@ ROOT_URLCONF = 'citasMedicas.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'citasMedicas'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
