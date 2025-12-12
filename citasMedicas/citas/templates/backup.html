@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Backup{% endblock %}
+
+{% block content %}
+    <style>
+        .btn-backup { background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 20px; }
+        .btn-backup:hover { background-color: #218838; color: white; }
+        .backup-container { text-align: center; padding: 40px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    </style>
+
+    <div class="backup-container">
+    <h1>Copia de Seguridad del Sistema</h1>
+    <p>Haga clic en el botón a continuación para descargar una copia completa de la base de datos en formato SQL.</p>
+    
+    <a href="{% url 'realizar_backup' %}" class="btn-backup">Descargar Backup SQL</a>
+    </div>
+{% endblock %}

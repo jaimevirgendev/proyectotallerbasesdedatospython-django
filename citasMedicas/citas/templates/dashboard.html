@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard-cards {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+    .card {
+        flex: 1;
+        min-width: 200px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: center;
+        border-top: 4px solid #007bff;
+    }
+    .card h3 {
+        margin: 0;
+        color: #666;
+        font-size: 1.1em;
+    }
+    .card p {
+        margin: 10px 0 0;
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #333;
+    }
+    .chart-container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    table.stats-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+    table.stats-table th, table.stats-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+    table.stats-table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+</style>
+
+<h1>Panel de Control (Dashboard)</h1>
+
+<div class="dashboard-cards">
+    <div class="card" style="border-color: #28a745;">
+        <h3>Total Pacientes</h3>
+        <p>{{ total_pacientes }}</p>
+    </div>
+    <div class="card" style="border-color: #17a2b8;">
+        <h3>Total Doctores</h3>
+        <p>{{ total_doctores }}</p>
+    </div>
+    <div class="card" style="border-color: #ffc107;">
+        <h3>Total Consultorios</h3>
+        <p>{{ total_consultorios }}</p>
+    </div>
+    <div class="card" style="border-color: #dc3545;">
+        <h3>Citas Totales</h3>
+        <p>{{ total_citas }}</p>
+    </div>
+</div>
+
+<div class="chart-container">
+    <h2>Estadísticas de Citas por Mes</h2>
+    {% if citas_por_mes %}
+        <table class="stats-table">
+            <thead>
+                <tr>
+                    <th>Mes</th>
+                    <th>Cantidad de Citas</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in citas_por_mes %}
+                <tr>
+                    <!-- Formateamos la fecha para que diga "Diciembre 2025" -->
+                    <td>{{ item.mes|date:"F Y"|capfirst }}</td>
+                    <td>{{ item.cantidad }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="color: #666; font-style: italic;">No hay suficientes datos para generar estadísticas mensuales.</p>
+    {% endif %}
+</div>
+
+<div style="margin-top: 20px;">
+    <a href="{% url 'lista_citas' %}" style="text-decoration: none; color: #007bff; font-weight: bold;">&larr; Volver a la lista de citas</a>
+</div>
+{% endblock %}

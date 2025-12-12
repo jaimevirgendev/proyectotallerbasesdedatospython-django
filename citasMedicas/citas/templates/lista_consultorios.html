@@ -4,12 +4,20 @@
 
 {% block content %}
     <h1>Consultorios</h1>
+    <div style="width: 90%; margin: 0 auto 15px auto;">
+        <a href="{% url 'crear_consultorio' %}" style="background-color: #28a745; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold;"><i class="fas fa-plus"></i> Nuevo Consultorio</a>
+        <form method="get" class="search-container">
+            <input type="text" name="q" class="search-input" placeholder="Buscar consultorio..." value="{{ request.GET.q }}">
+            <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
     
     <table class="tabla-estilo">
         <thead>
             <tr>
                 <th>Nombre del Consultorio</th>
                 <th>Dirección</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -17,10 +25,14 @@
             <tr>
                 <td>{{ consultorio.nombre_consultorio }}</td>
                 <td>{{ consultorio.direccion }}</td>
+                <td>
+                    <a href="{% url 'editar_consultorio' consultorio.id %}" style="color: #ffc107; font-weight: bold; text-decoration: none; margin-right: 10px;" title="Editar"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'eliminar_consultorio' consultorio.id %}" style="color: #dc3545; font-weight: bold; text-decoration: none;" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
+                </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="2" class="mensaje-vacio">No hay consultorios registrados aún.</td>
+                <td colspan="3" class="mensaje-vacio">No hay consultorios registrados aún.</td>
             </tr>
             {% endfor %}
         </tbody>

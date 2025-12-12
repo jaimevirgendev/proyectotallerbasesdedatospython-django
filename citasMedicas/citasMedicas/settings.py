@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_j5u3yb*^ot(@-&9uzzui2*k4-nof%g^f9cvkl6_&tqdlhe#@x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 LOGIN_REDIRECT_URL = '/citas/'
 LOGIN_URL = '/'

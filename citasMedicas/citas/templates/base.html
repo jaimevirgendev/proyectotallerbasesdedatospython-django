@@ -1,8 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Clínica Citas Médicas{% endblock %}</title>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* Estilos Generales */
         body {
@@ -160,6 +163,44 @@
             color: #555;
             margin-bottom: 30px;
         }
+
+        /* Estilos para Mensajes (Alertas) */
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .alert-error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        /* Estilos para el Buscador */
+        .search-container {
+            float: right;
+        }
+        .search-input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .search-btn {
+            padding: 8px 12px;
+            background-color: #009879;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .search-btn:hover { background-color: #007f65; }
     </style>
 </head>
 <body>
@@ -167,7 +208,10 @@
     {% if user.is_authenticated %}
     <nav class="navbar">
         <div class="navbar-brand">
-            <a href="{% url 'lista_citas' %}">Clínica Salud</a>
+            <a href="{% url 'lista_citas' %}" style="display: flex; align-items: center;">
+                <img src="{% static 'img/_103aac17-1e1c-4637-9562-9339af1b1c2f.jpg' %}" alt="Logo" style="height: 40px; margin-right: 10px; border-radius: 50%;">
+                Clínica Salud
+            </a>
         </div>
         <ul class="navbar-links">
             <li><a href="{% url 'lista_citas' %}">Citas</a></li>
@@ -179,6 +223,8 @@
 
             <li><a href="{% url 'lista_doctores' %}">Doctores</a></li>
             <li><a href="{% url 'lista_consultorios' %}">Consultorios</a></li>
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'vista_backup' %}">Backups</a></li>
         </ul>
         <div class="navbar-user">
             <span>Hola, {{ user.username }}</span>
@@ -188,9 +234,20 @@
     {% endif %}
 
     <div class="main-content">
+        <!-- Bloque para mostrar mensajes de Django -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
         {% block content %}
         {% endblock %}
     </div>
+
+    <footer style="text-align: center; padding: 20px; color: #666; font-size: 0.9em; margin-top: 20px; border-top: 1px solid #eee;">
+        <p>&copy; {% now "Y" %} Clínica Salud. Todos los derechos reservados.</p>
+    </footer>
 
 </body>
 </html>

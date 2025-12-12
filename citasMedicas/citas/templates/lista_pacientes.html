@@ -4,6 +4,13 @@
 
 {% block content %}
     <h1>Pacientes Registrados</h1>
+    <div style="width: 90%; margin: 0 auto 15px auto;">
+        <a href="{% url 'crear_paciente' %}" style="background-color: #28a745; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold;"><i class="fas fa-user-plus"></i> Nuevo Paciente</a>
+        <form method="get" class="search-container">
+            <input type="text" name="q" class="search-input" placeholder="Buscar paciente..." value="{{ request.GET.q }}">
+            <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
     
     <table class="tabla-estilo">
         <thead>
@@ -13,6 +20,7 @@
                 <th>Fecha de Nacimiento</th>
                 <th>Teléfono</th>
                 <th>Correo</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -23,10 +31,14 @@
                 <td>{{ paciente.fecha_nacimiento }}</td>
                 <td>{{ paciente.telefono }}</td>
                 <td>{{ paciente.email }}</td>
+                <td>
+                    <a href="{% url 'editar_paciente' paciente.id %}" style="color: #ffc107; font-weight: bold; text-decoration: none; margin-right: 10px;" title="Editar"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'eliminar_paciente' paciente.id %}" style="color: #dc3545; font-weight: bold; text-decoration: none;" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
+                </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5" class="mensaje-vacio">No hay pacientes registrados aún.</td>
+                <td colspan="6" class="mensaje-vacio">No hay pacientes registrados aún.</td>
             </tr>
             {% endfor %}
         </tbody>
