@@ -32,7 +32,6 @@ urlpatterns = [
     # Extras
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('panel-backup/', VistaBackup.as_view(), name='vista_backup'),
-    path('backup/', RealizarBackup.as_view(), name='realizar_backup'),
     # URL para el Login
     path('', auth_views.LoginView.as_view(template_name='login.html', next_page='dashboard', redirect_authenticated_user=True), name='login'),
     

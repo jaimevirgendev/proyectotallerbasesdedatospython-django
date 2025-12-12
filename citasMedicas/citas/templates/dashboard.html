@@ -75,6 +75,66 @@
 </div>
 
 <div class="chart-container">
+    <h2>Información del Usuario</h2>
+    <table class="stats-table">
+        <tr>
+            <th>Usuario</th>
+            <td><strong>{{ user_info.username }}</strong></td>
+        </tr>
+        <tr>
+            <th>Es Superusuario</th>
+            <td>{% if user_info.is_superuser %}<span style="color: #28a745; font-weight: bold;">✓ Sí</span>{% else %}<span style="color: #dc3545;">✗ No</span>{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Es Personal (Staff)</th>
+            <td>{% if user_info.is_staff %}<span style="color: #28a745; font-weight: bold;">✓ Sí</span>{% else %}<span style="color: #dc3545;">✗ No</span>{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Grupos</th>
+            <td>
+                {% if user_info.grupos %}
+                    {% for grupo in user_info.grupos %}
+                        <span style="background-color: #007bff; color: white; padding: 4px 8px; border-radius: 3px; margin-right: 5px;">{{ grupo }}</span>
+                    {% endfor %}
+                {% else %}
+                    <em>No asignado a ningún grupo</em>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    
+    <h3 style="margin-top: 20px;">Permisos</h3>
+    {% if user_info.is_superuser %}
+        <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 4px; color: #155724;">
+            <strong>✓ Acceso Total:</strong> Todos los permisos están habilitados (Superusuario)
+        </div>
+    {% elif user_info.permisos %}
+        <table class="stats-table">
+            <thead>
+                <tr>
+                    <th>Permiso</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for permiso in user_info.permisos %}
+                <tr>
+                    <td>{{ permiso }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td><em>Sin permisos específicos</em></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 4px; color: #721c24;">
+            <strong>✗ Sin permisos:</strong> Este usuario no tiene permisos asignados
+        </div>
+    {% endif %}
+</div>
+
+<div class="chart-container">
     <h2>Estadísticas de Citas por Mes</h2>
     {% if citas_por_mes %}
         <table class="stats-table">

@@ -4,8 +4,10 @@
 
 {% block content %}
     <style>
-        .btn-backup { background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 20px; }
+        .btn-backup { background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 20px; margin-right: 10px; }
         .btn-backup:hover { background-color: #218838; color: white; }
+        .btn-restore { background-color: #6c757d; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; display: inline-block; margin-top: 20px; }
+        .btn-restore:hover { background-color: #5a6268; color: white; }
         .backup-container { text-align: center; padding: 40px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     </style>
 
@@ -13,6 +15,16 @@
     <h1>Copia de Seguridad del Sistema</h1>
     <p>Haga clic en el botón a continuación para descargar una copia completa de la base de datos en formato SQL.</p>
     
-    <a href="{% url 'realizar_backup' %}" class="btn-backup">Descargar Backup SQL</a>
+    <div>
+        <a href="{% url 'vista_backup' %}?action=descargar" class="btn-backup"><i class="fas fa-download"></i> Descargar Backup SQL</a>
+    </div>
+
+    <h2>Restaurar Base de Datos</h2>
+    <p>Selecciona un archivo SQL para restaurar la base de datos.</p>
+    <form action="{% url 'vista_backup' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="upload_bd" class="btn-restore"><i class="fas fa-upload"></i> Seleccionar archivo</label>
+        <input type="file" id="upload_bd" name="archivo_respaldo" accept=".sql" style="display: none;" onchange="if(confirm('¿Deseas restaurar la base de datos? Esto sobrescribirá la información actual.')){this.form.submit();}">
+    </form>
     </div>
 {% endblock %}

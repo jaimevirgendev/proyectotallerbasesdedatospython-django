@@ -12,6 +12,10 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 import subprocess
 import os
+from django.conf import settings
+from django.http import HttpResponse
+from django.shortcuts import redirect
+from django.contrib import messages
 # Create your views here.
 
 
@@ -100,6 +104,16 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context['total_doctores'] = Doctor.objects.count()
         context['total_consultorios'] = Consultorio.objects.count()
         context['total_citas'] = Cita.objects.count()
+        
+        # Información del usuario y permisos
+        user = self.request.user
+        context['user_info'] = {
+            'username': user.username,
+            'is_superuser': user.is_superuser,
+            'is_staff': user.is_staff,
+            'permisos': user.get_all_permissions() if hasattr(user, 'get_all_permissions') else [],
+            'grupos': list(user.groups.values_list('name', flat=True)) if user.groups.exists() else [],
+        }
 
         # Agrupar citas por mes
         citas_mes = Cita.objects.annotate(
@@ -148,8 +162,87 @@ class RealizarBackup(LoginRequiredMixin, View):
             return HttpResponse("Error: No se encontró el comando 'mysqldump'. Asegúrate de que la carpeta 'bin' de MySQL esté en el PATH de Windows.", status=500)
 
 
-class VistaBackup(LoginRequiredMixin, TemplateView):
+class VistaBackup(LoginRequiredMixin, View):
     template_name = 'backup.html'
+    
+    def get(self, request, *args, **kwargs):
+        """Muestra la página de backup o realiza la descarga del respaldo."""
+        action = request.GET.get('action')
+        
+        if action == 'descargar':
+            return self.respaldar_bd(request)
+        else:
+            return render(request, self.template_name)
+    
+    def post(self, request, *args, **kwargs):
+        """Restaura la base de datos desde un archivo subido."""
+        return self.restaurar_bd(request)
+    
+    def respaldar_bd(self, request):
+        """Genera un respaldo SQL usando mysqldump."""
+        db_conf = settings.DATABASES['default']
+        db_name = db_conf['NAME']
+        db_user = db_conf['USER']
+        db_password = db_conf['PASSWORD']
+        db_host = db_conf['HOST'] if db_conf['HOST'] else 'localhost'
+        db_port = db_conf['PORT'] if db_conf['PORT'] else '3306'
+
+        cmd = ['mysqldump', '-h', db_host, '-P', str(db_port), '-u', db_user, db_name]
+
+        env = os.environ.copy()
+        if db_password:
+            env['MYSQL_PWD'] = db_password
+
+        try:
+            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
+            output, error = process.communicate()
+
+            if process.returncode == 0:
+                response = HttpResponse(output, content_type='application/sql')
+                response['Content-Disposition'] = f'attachment; filename="respaldo_{db_name}.sql"'
+                return response
+            else:
+                error_msg = error.decode('utf-8')
+                messages.error(request, f"Error al crear el respaldo: {error_msg}")
+        except FileNotFoundError:
+            messages.error(request, "No se encontró 'mysqldump'. Asegúrate de que la carpeta 'bin' de MySQL esté en el PATH del sistema.")
+        except Exception as e:
+            messages.error(request, f"Ocurrió un error inesperado: {str(e)}")
+
+        return render(request, self.template_name)
+    
+    def restaurar_bd(self, request):
+        """Restaura la base de datos desde un archivo SQL subido."""
+        if request.FILES.get('archivo_respaldo'):
+            archivo = request.FILES['archivo_respaldo']
+            
+            db_conf = settings.DATABASES['default']
+            db_name = db_conf['NAME']
+            db_user = db_conf['USER']
+            db_password = db_conf['PASSWORD']
+            db_host = db_conf['HOST'] if db_conf['HOST'] else 'localhost'
+            db_port = db_conf['PORT'] if db_conf['PORT'] else '3306'
+
+            cmd = ['mysql', '-h', db_host, '-P', str(db_port), '-u', db_user, db_name]
+
+            env = os.environ.copy()
+            if db_password:
+                env['MYSQL_PWD'] = db_password
+
+            try:
+                process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
+                stdout, stderr = process.communicate(input=archivo.read())
+
+                if process.returncode == 0:
+                    messages.success(request, "Base de datos restaurada exitosamente.")
+                else:
+                    messages.error(request, f"Error al restaurar la base de datos: {stderr.decode('utf-8')}")
+            except FileNotFoundError:
+                messages.error(request, "No se encontró el comando 'mysql'. Verifica el PATH del sistema.")
+            except Exception as e:
+                messages.error(request, f"Error: {str(e)}")
+
+        return render(request, self.template_name)
 
 
 # --- VISTAS CRUD GENÉRICAS ---
@@ -250,3 +343,14 @@ class EliminarCita(LoginRequiredMixin, DeleteView):
     def form_valid(self, form):
         messages.success(self.request, "Cita eliminada correctamente.")
         return super().form_valid(form)
+    
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_pacientes'] = Paciente.objects.count()
+        context['total_doctores'] = Doctor.objects.count()
+        context['total_consultorios'] = Consultorio.objects.count()
+        context['total_citas'] = Cita.objects.count()
+        return context
